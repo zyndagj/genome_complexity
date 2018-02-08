@@ -35,31 +35,33 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-import unittest
+import unittest, sys
+from komplexity import komplexity
 try:
 	from unittest.mock import patch
 except:
 	from mock import patch
 from os import path
-import komplexity
+from StringIO import StringIO
 
 class TestKomplexity(unittest.TestCase):
 	def setUp(self):
 		self.fasta = path.join(path.dirname(__file__),'test.fasta')
 	def test_1(self):
-		testArgs = ['-F',self.fasta,'-k','3','-w','5','-s','5']
-		patch(sys, 'argv', testArgs)
+		testArgs = ['None','-F',self.fasta,'-k','3','-w','5','-s','5']
 		answer1 = \
+'''test1	0	5	3
+test1	5	10	3
+test1	10	15	3
+test1	13	18	3
+test2	0	5	3
+test2	5	10	3
+test2	8	13	3
 '''
-test1	0	5
-test1	5	10
-test1	10	15
-test1	13	18
-test2	0	5
-test2	5	10
-test2	8	13
-'''
-		assertMultiLineEqual(answer1, komplexity.main)
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
 
 if __name__ == "__main__":
 	unittest.main()

@@ -73,7 +73,8 @@ def main():
 			OF.write(tmpStr)
 			tmpStr = ''
 	OF.write(tmpStr)
-	OF.close()
+	if args.O != 'stdout':
+		OF.close()
 
 def initWorker(localWindowSize, fastaFile, k):
 	global FA, windowSize, kSize

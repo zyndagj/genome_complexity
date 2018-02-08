@@ -1,17 +1,17 @@
-# K-omplex
+# Komplexity
 
 A tool that estimates sequence complexing by counting distinct k-mers in sliding windows
 
 ## Installation
 
 ```
-pip install git+git@github.com:zyndagj/k-omplex.git
+pip install git+git@github.com:zyndagj/komplexity.git
 ```
 
 ## Usage
 
 ```
-usage: k-omplex.py [-h] -F FASTA [-O BEDG] [-k INT] [-w INT] [-s INT] [-P INT]
+usage: komplexity [-h] -F FASTA [-O BEDG] [-k INT] [-w INT] [-s INT] [-P INT]
 
 A tool that estimates sequence complexing by counting distinct k-mers in
 sliding windows
@@ -24,6 +24,12 @@ optional arguments:
   -w INT      Window size (Default: 10000)
   -s INT      Step (slide) size (Default: 1000)
   -P INT      Number of cores to use (Default: 8)
+```
+
+## Testing
+
+```
+python setup.py test
 ```
 
 ## Output
