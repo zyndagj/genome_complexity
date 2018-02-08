@@ -35,8 +35,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-import unittest, sys
-from komplexity import komplexity
+import unittest, sys, komplexity
 try:
 	from unittest.mock import patch
 except:
