@@ -35,22 +35,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-"""
-Setup script for komplexity
-"""
+from komplexity import main
 
-try:
-	from setuptools import setup
-except:
-	from distutils.core import setup
-
-setup(name = "komplexity",
-	version = "0.1.0",
-	author = "Greg Zynda",
-	author_email="gzynda@tacc.utexas.edu",
-	license="BSD-3",
-	description="A tool that estimates sequence complexing by counting distinct k-mers in sliding windows",
-	install_requires=["pysam"],
-	packages = ["komplexity"],
-	scripts = ["bin/komplexity"],
-	test_suite = "tests")
+main()
