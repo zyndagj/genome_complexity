@@ -52,10 +52,40 @@ class TestKomplexity(unittest.TestCase):
 '''test1	0	5	3
 test1	5	10	3
 test1	10	15	3
-test1	13	18	3
+test1	15	18	3
 test2	0	5	3
 test2	5	10	3
-test2	8	13	3
+test2	10	13	3
+'''
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
+	def test_2(self):
+		testArgs = ['None','-F',self.fasta,'-k','3','-w','6','-s','5']
+		answer1 = \
+'''test1	0	5	4
+test1	5	10	4
+test1	10	15	4
+test1	15	18	4
+test2	0	5	4
+test2	5	10	4
+test2	10	13	4
+'''
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
+	def test_3(self):
+		testArgs = ['None','-F',self.fasta,'-k','3','-w','6','-s','5','-A','sum']
+		answer1 = \
+'''test1	0	5	4
+test1	5	10	8
+test1	10	15	8
+test1	15	18	8
+test2	0	5	4
+test2	5	10	8
+test2	10	13	8
 '''
 		with patch('sys.argv', testArgs):
 			with patch('sys.stdout', StringIO()):
