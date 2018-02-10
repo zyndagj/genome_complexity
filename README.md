@@ -5,7 +5,7 @@ A tool that estimates sequence complexing by counting distinct k-mers in sliding
 ## Installation
 
 ```
-pip install git+https://github.com:zyndagj/komplexity.git
+pip install git+https://github.com/zyndagj/komplexity.git
 ```
 
 ## Usage
