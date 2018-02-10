@@ -51,6 +51,7 @@ setup(name = "komplexity",
 	license="BSD-3",
 	description="A tool that estimates sequence complexing by counting distinct k-mers in sliding windows",
 	install_requires=["pysam"],
+	tests_require=['mock'],
 	packages = ["komplexity"],
 	scripts = ["bin/komplexity"],
 	test_suite = "tests")
