@@ -44,4 +44,20 @@ By default bedgraph formatted output is sent to STDOUT, but it can be sent to a 
 - End position (exclusive)
 - Number of distinct k-mers
 
-A line will be outupt for every sliding step, and overlapping windows will be aggregated using the (`-A`) method.
+A line will be outupt for every sliding step, and overlapping windows will be aggregated using the (`-A`) method. For example, if we used 4 base windows, 2 base steps, and counted 2-mers, we would have the following results
+
+```
+Sequence AGAGCCTT
+Window 1 ||||      2 2-mers (AG,GA)
+Window 2   ||||    3 2-mers (AG,GC,CT)
+Window 3     ||||  3 2-mers (CC,CT,TT)
+
+Output Bedgraph with sum aggregation
+
+Sequence  0 2 2
+Sequence  2 4 5
+Sequence  4 6 6
+Sequence  6 8 3
+```
+
+Notice that there was an output entry for step, instead of aligning to windows. This is because the bedgraph format does not allow for overlapping results.
