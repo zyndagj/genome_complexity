@@ -2,7 +2,7 @@
 #
 ###############################################################################
 # Author: Greg Zynda
-# Last Modified: 02/07/2018
+# Last Modified: 03/19/2018
 ###############################################################################
 # BSD 3-Clause License
 # 
@@ -41,6 +41,7 @@ from pysam import FastaFile
 from math import ceil
 from itertools import chain, imap, ifilter
 import numpy as np
+from collections import Counter
 
 def main():
 	fCheck = fileCheck() #class for checking parameters
@@ -52,18 +53,23 @@ def main():
 	parser.add_argument('-s', metavar='INT', help='Step (slide) size (Default: %(default)s)', default=1000, type=int) 
 	parser.add_argument('-P', metavar='INT', help='Number of cores to use (Default: %(default)s)', default=mp.cpu_count(), type=int) 
 	parser.add_argument('-A', metavar='STR', help='Aggregation method ([mean], median, sum, min, max)', default="mean", type=str)
+	parser.add_argument('-M', metavar='STR', help='Report unique or duplicate kmers (Default: %(default)s)', default='unique', type=str)
 	parser.add_argument('-N', help="Allow N's in k-mers", action="store_true")
 	#parser.add_argument('-', metavar='INT', help=' (Default: %(default)s)', default=X, type=int) 
 	args = parser.parse_args()
+	# Verify report choice
+	reportChoices = set(['unique','duplicate'])
+	if args.M not in reportChoices:
+		parser.error("-M but be one of [%s]"%(', '.join(reportChoices)))
 	# Verify agg choice
 	aggChoices = {"mean":np.mean,"median":np.median,"sum":sum,"min":min,"max":max}
 	if args.A not in aggChoices:
-		raise argparse.ArgumentValueError("-A must be mean, median, sum, min, or max")
+		parser.error("-A must be mean, median, sum, min, or max")
 	aggFunc = aggChoices[args.A]
 	# Make sure step size is smaller or equal to window size
 	if args.s > args.w:
-		raise argparse.ArgumentValueError("Step size should be <= window size")
-	# Open output file
+		parser.error("Step size should be <= window size")
+	# Open output file with buffer
 	if args.O == 'stdout':
 		OF = sys.stdout
 	else:
@@ -72,24 +78,14 @@ def main():
 	sortedChroms = sorted(FA.references)
 	iterList = [genChromStarts(FA, chrom, args.w, args.s) for chrom in sortedChroms]
 	# Spawn workers
-	p = mp.Pool(args.P, initializer=initWorker, initargs=(args.w, args.F, args.k, args.N))
-	#tmpStr = ''
-	#writeAt = 1000
-	#at = 0
+	p = mp.Pool(args.P, initializer=initWorker, initargs=(args.w, args.F, args.k, args.N, args.M))
 	intervalList = []
 	bI = bedgraphInterval(args.s, aggFunc)
 	for ret in p.imap(regionWorker, chain(*iterList), 1000):
 		for outStr in bI.add(*ret):
 			OF.write(outStr)
-			#at += 1
-			#tmpStr += outStr
-			#if at % writeAt == 0:
-			#	OF.write(tmpStr)
-			#	tmpStr = ''
 	for outStr in bI.end():
 		OF.write(outStr)
-		#tmpStr += outStr
-	#OF.write(tmpStr)
 	if args.O != 'stdout':
 		OF.close()
 	p.close()
@@ -126,7 +122,11 @@ class bedgraphInterval:
 			if item[0] < end and start < item[1]:
 				outList.append(item[2])
 		aggVal = self.aggFunc(outList)
-		return "%s\t%i\t%i\t%i\n"%(self.chrom, start, end, aggVal)
+		# Integers are printed without a decimal
+		if aggVal == int(aggVal): 
+			return "%s\t%i\t%i\t%i\n"%(self.chrom, start, end, aggVal)
+		else:
+			return "%s\t%i\t%i\t%.2f\n"%(self.chrom, start, end, aggVal)
 	def remove(self, start, end):
 		newList = []
 		for item in self.IList:
@@ -148,12 +148,13 @@ class bedgraphInterval:
 		self.lastStart = 0
 		self.lastEnd = 0
 
-def initWorker(localWindowSize, fastaFile, k, N):
-	global FA, windowSize, kSize, useN
+def initWorker(localWindowSize, fastaFile, k, N, M):
+	global FA, windowSize, kSize, useN, method
 	windowSize = localWindowSize
 	FA = FastaFile(fastaFile)
 	kSize = k
 	useN = N
+	method = M
 
 def regionWorker(args):
 	chrom, start = args
@@ -163,15 +164,23 @@ def regionWorker(args):
 		kmerIter = (region[i:i+kSize] for i in xrange(len(region)-kSize+1))
 	else:
 		kmerIter = ifilter(lambda x: 'N' not in x, (region[i:i+kSize] for i in xrange(len(region)-kSize+1)))
-	kmerSet = set(kmerIter)
-	return (chrom, start, end, len(kmerSet))
-	#return "%s\t%i\t%i\t%i\n"%(chrom, start, end, len(kmerSet))
+	kmerCounter = Counter(kmerIter)
+	if method == 'unique':
+		# Return de-duplicated counter of kmers
+		retCount = len(list(kmerCounter))
+	elif method == 'duplicate':
+		# Return "duplicate" (seen more than twice) kmers
+		retCount = len(filter(lambda x: x[1] >= 2, kmerCounter.items()))
+	else:
+		sys.exit("Unhandled method "+method)
+	return (chrom, start, start+len(region), retCount)
 
 def genChromStarts(FA, chrom, windowSize, stepSize):	
 	length = FA.get_reference_length(chrom)
 	nWindows = (length-windowSize)/float(stepSize)
 	nFullWindows = int(ceil(nWindows))
-	wrap = ((chrom, length-windowSize),)
+	# The last window may be shorter
+	wrap = ((chrom, nFullWindows*stepSize),)
 	fullStarts = imap(lambda x: (chrom, x*stepSize), xrange(nFullWindows))
 	return chain(fullStarts, wrap)
 

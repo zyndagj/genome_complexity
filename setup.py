@@ -2,7 +2,7 @@
 #
 ###############################################################################
 # Author: Greg Zynda
-# Last Modified: 02/07/2018
+# Last Modified: 03/19/2018
 ###############################################################################
 # BSD 3-Clause License
 # 
@@ -45,13 +45,13 @@ except:
 	from distutils.core import setup
 
 setup(name = "komplexity",
-	version = "0.1.0",
+	version = "0.2.0",
 	author = "Greg Zynda",
 	author_email="gzynda@tacc.utexas.edu",
 	license="BSD-3",
 	description="A tool that estimates sequence complexing by counting distinct k-mers in sliding windows",
 	install_requires=["pysam"],
-	tests_require=['mock'],
+	tests_require=["mock"],
 	packages = ["komplexity"],
 	scripts = ["bin/komplexity"],
 	test_suite = "tests")

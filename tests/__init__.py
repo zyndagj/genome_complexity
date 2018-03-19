@@ -2,7 +2,7 @@
 #
 ###############################################################################
 # Author: Greg Zynda
-# Last Modified: 02/07/2018
+# Last Modified: 03/19/2018
 ###############################################################################
 # BSD 3-Clause License
 # 
@@ -52,10 +52,10 @@ class TestKomplexity(unittest.TestCase):
 '''test1	0	5	3
 test1	5	10	3
 test1	10	15	3
-test1	15	18	3
+test1	15	18	1
 test2	0	5	3
 test2	5	10	3
-test2	10	13	3
+test2	10	13	1
 '''
 		with patch('sys.argv', testArgs):
 			with patch('sys.stdout', StringIO()):
@@ -67,10 +67,10 @@ test2	10	13	3
 '''test1	0	5	4
 test1	5	10	4
 test1	10	15	4
-test1	15	18	4
+test1	15	18	2.50
 test2	0	5	4
 test2	5	10	4
-test2	10	13	4
+test2	10	13	2.50
 '''
 		with patch('sys.argv', testArgs):
 			with patch('sys.stdout', StringIO()):
@@ -82,10 +82,67 @@ test2	10	13	4
 '''test1	0	5	4
 test1	5	10	8
 test1	10	15	8
-test1	15	18	8
+test1	15	18	5
 test2	0	5	4
 test2	5	10	8
-test2	10	13	8
+test2	10	13	5
+'''
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
+	def test_4(self):
+		testArgs = ['None','-F',self.fasta,'-k','3','-w','5','-s','5','-M','duplicate']
+		answer1 = \
+'''test1	0	5	0
+test1	5	10	0
+test1	10	15	0
+test1	15	18	0
+test2	0	5	0
+test2	5	10	0
+test2	10	13	0
+'''
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
+	def test_5(self):
+		testArgs = ['None','-F',self.fasta,'-k','3','-w','6','-s','5','-M','duplicate']
+		answer1 = \
+'''test1	0	5	0
+test1	5	10	0
+test1	10	15	0
+test1	15	18	0
+test2	0	5	0
+test2	5	10	0
+test2	10	13	0
+'''
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
+	def test_6(self):
+		testArgs = ['None','-F',self.fasta,'-k','3','-w','6','-s','5','-A','sum','-M','duplicate']
+		answer1 = \
+'''test1	0	5	0
+test1	5	10	0
+test1	10	15	0
+test1	15	18	0
+test2	0	5	0
+test2	5	10	0
+test2	10	13	0
+'''
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
+	def test_7(self):
+		testArgs = ['None','-F',self.fasta,'-k','2','-w','10','-s','10','-M','duplicate']
+		answer1 = \
+'''test1	0	10	1
+test1	10	18	1
+test2	0	10	1
+test2	10	13	0
 '''
 		with patch('sys.argv', testArgs):
 			with patch('sys.stdout', StringIO()):

@@ -12,7 +12,7 @@ pip install git+https://github.com/zyndagj/komplexity.git
 
 ```
 usage: komplexity [-h] -F FASTA [-O BEDG] [-k INT] [-w INT] [-s INT] [-P INT]
-                   [-A STR] [-N]
+                   [-A STR] [-M STR] [-N]
 
 A tool that estimates sequence complexing by counting distinct k-mers in
 sliding windows
@@ -26,6 +26,7 @@ optional arguments:
   -s INT      Step (slide) size (Default: 1000)
   -P INT      Number of cores to use (Default: 28)
   -A STR      Aggregation method ([mean], median, sum, min, max)
+  -M STR      Report unique or duplicate kmers (Default: unique)
   -N          Allow N's in k-mers
 ```
 
