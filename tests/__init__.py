@@ -2,7 +2,7 @@
 #
 ###############################################################################
 # Author: Greg Zynda
-# Last Modified: 03/19/2018
+# Last Modified: 03/20/2018
 ###############################################################################
 # BSD 3-Clause License
 # 
@@ -143,6 +143,18 @@ test2	10	13	0
 test1	10	18	1
 test2	0	10	1
 test2	10	13	0
+'''
+		with patch('sys.argv', testArgs):
+			with patch('sys.stdout', StringIO()):
+				komplexity.main()
+				self.assertMultiLineEqual(answer1, sys.stdout.getvalue())
+	def test_7(self):
+		testArgs = ['None','-F',self.fasta,'-k','2','-w','10','-s','10','-M','max']
+		answer1 = \
+'''test1	0	10	2
+test1	10	18	2
+test2	0	10	2
+test2	10	13	1
 '''
 		with patch('sys.argv', testArgs):
 			with patch('sys.stdout', StringIO()):

@@ -26,8 +26,28 @@ optional arguments:
   -s INT      Step (slide) size (Default: 1000)
   -P INT      Number of cores to use (Default: 28)
   -A STR      Aggregation method ([mean], median, sum, min, max)
-  -M STR      Report unique or duplicate kmers (Default: unique)
+  -M STR      Report unique, duplicate, and max kmers (Default: unique)
   -N          Allow N's in k-mers
+```
+
+#### Reporting
+
+Unique - Reports the number of distinct k-mers in a window
+
+```
+unique({AA, AA, AA, AC}) = 2
+```
+
+Duplicate - Reports the number of k-mers seen at least twice
+
+```
+duplicate({AA, AA, AA, AC}) = 1
+```
+
+Max - Reports the highest k-mer frequency
+
+```
+max({AA, AA, AA, AC}) = 3
 ```
 
 ## Testing

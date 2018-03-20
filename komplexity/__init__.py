@@ -2,7 +2,7 @@
 #
 ###############################################################################
 # Author: Greg Zynda
-# Last Modified: 03/19/2018
+# Last Modified: 03/20/2018
 ###############################################################################
 # BSD 3-Clause License
 # 
@@ -53,12 +53,12 @@ def main():
 	parser.add_argument('-s', metavar='INT', help='Step (slide) size (Default: %(default)s)', default=1000, type=int) 
 	parser.add_argument('-P', metavar='INT', help='Number of cores to use (Default: %(default)s)', default=mp.cpu_count(), type=int) 
 	parser.add_argument('-A', metavar='STR', help='Aggregation method ([mean], median, sum, min, max)', default="mean", type=str)
-	parser.add_argument('-M', metavar='STR', help='Report unique or duplicate kmers (Default: %(default)s)', default='unique', type=str)
+	parser.add_argument('-M', metavar='STR', help='Report unique, duplicate, and max kmers (Default: %(default)s)', default='unique', type=str)
 	parser.add_argument('-N', help="Allow N's in k-mers", action="store_true")
 	#parser.add_argument('-', metavar='INT', help=' (Default: %(default)s)', default=X, type=int) 
 	args = parser.parse_args()
 	# Verify report choice
-	reportChoices = set(['unique','duplicate'])
+	reportChoices = set(['unique','duplicate','max'])
 	if args.M not in reportChoices:
 		parser.error("-M but be one of [%s]"%(', '.join(reportChoices)))
 	# Verify agg choice
@@ -171,6 +171,8 @@ def regionWorker(args):
 	elif method == 'duplicate':
 		# Return "duplicate" (seen more than twice) kmers
 		retCount = len(filter(lambda x: x[1] >= 2, kmerCounter.items()))
+	elif method == 'max':
+		retCount = kmerCounter.most_common(1)[0][1]
 	else:
 		sys.exit("Unhandled method "+method)
 	return (chrom, start, start+len(region), retCount)
