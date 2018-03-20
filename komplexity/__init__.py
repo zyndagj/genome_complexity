@@ -172,7 +172,10 @@ def regionWorker(args):
 		# Return "duplicate" (seen more than twice) kmers
 		retCount = len(filter(lambda x: x[1] >= 2, kmerCounter.items()))
 	elif method == 'max':
-		retCount = kmerCounter.most_common(1)[0][1]
+		if kmerCounter:
+			retCount = kmerCounter.most_common(1)[0][1]
+		else:
+			retCount = 0
 	else:
 		sys.exit("Unhandled method "+method)
 	return (chrom, start, start+len(region), retCount)
