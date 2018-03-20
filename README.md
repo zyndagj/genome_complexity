@@ -30,21 +30,21 @@ optional arguments:
   -N          Allow N's in k-mers
 ```
 
-#### Reporting
+### Reporting
 
-Unique - Reports the number of distinct k-mers in a window
+**Unique** - Reports the number of distinct k-mers in a window
 
 ```
 unique({AA, AA, AA, AC}) = 2
 ```
 
-Duplicate - Reports the number of k-mers seen at least twice
+**Duplicate** - Reports the number of k-mers seen at least twice
 
 ```
 duplicate({AA, AA, AA, AC}) = 1
 ```
 
-Max - Reports the highest k-mer frequency
+**Max** - Reports the highest k-mer frequency
 
 ```
 max({AA, AA, AA, AC}) = 3
