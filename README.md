@@ -82,3 +82,25 @@ Sequence  6 8 3
 ```
 
 Notice that there was an output entry for step, instead of aligning to windows. This is because the bedgraph format does not allow for overlapping results.
+
+### Example Results
+
+When run on the TAIR10 reference using 29 base k-mers and 10 kilobase windows that slide 1 kilobase each step using:
+
+```
+komplexity -F TAIR10_Chr.all.fasta -k 29 -w 10000 -s 1000 -M max -O TAIR10_k29_w10000_s1000_max_noN.bedgraph
+komplexity -F TAIR10_Chr.all.fasta -k 29 -w 10000 -s 1000 -M unique -O TAIR10_k29_w10000_s1000_unique_noN.bedgraph
+komplexity -F TAIR10_Chr.all.fasta -k 29 -w 10000 -s 1000 -M duplicate -O TAIR10_k29_w10000_s1000_duplicate_noN.bedgraph
+```
+
+Komplexity produces 3 three tracks in bedgraph format. These tracks can be viewed directly in a genome browser like IGV.
+
+The first image below is centered around the centromere of *A. thaliana* Chromosome 3.
+
+![tair10_centromere](https://user-images.githubusercontent.com/6790115/38102090-d7e55510-3347-11e8-90cf-946e7f06ca80.png)
+
+The unique track dips around repetitive and regions containing N bases since those k-mers are not reported. You can also see that both the duplicate and max tracks spike around those regions, demonstrating the not only are there fewer distinct k-mers, but they are also getting repeated in the sequence window. Lastly, you'll see that there are a few spikes in the max track that do not correspond to major changes in either the duplicate or unique tracks.
+
+![tair10_arm](https://user-images.githubusercontent.com/6790115/38102322-7f1289fc-3348-11e8-8a13-d3413ba6c3f8.png)
+
+Looking at a region on the arm of *A. thaliana* Chromosome 3, you'll see a large spike in the duplicate track that corresponds to the only obvious dip in the unique track. You'll also see smaller spikes in duplicate that align to spikes in max and transposable elements from the [Araport11](https://www.araport.org/) annotation.
